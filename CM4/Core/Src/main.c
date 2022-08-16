@@ -46,7 +46,7 @@ UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
-char                hello[]         = "HELLO Test_Uart_006_WL55JC1\n" ;
+char                hello[]         = "HELLO Test_Uart_006_WL55JC1_CM4\n" ;
 HAL_StatusTypeDef   uart_status ;
 uint8_t             rx_buff[15] ;
 uint8_t             tx_buff[15] ;
@@ -299,13 +299,12 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UARTEx_RxEventCallback ( UART_HandleTypeDef *huart , uint16_t Size )
 {
-	//const char z[1] = { 0 } ;
 	const char* z = 0 ;
     if ( huart->Instance == USART1 )
     {
-    	if ( rx_buff[0] != 0 )
+    	if ( rx_buff[0] != 0 ) // to avoid doublet because of 2 INTs
     	{
-    		strcat ( (char *) rx_buff , z ) ;
+    		strcat ( (char *) rx_buff , z ) ; // to avoid debris after '\n' of original message
     		uart_status = HAL_UART_Transmit ( &huart2 , (const uint8_t *) rx_buff ,  strlen ( (char*) rx_buff ) , UART_TX_TIMEOUT ) ;
     		rx_buff[0] = 0 ;
     	}
