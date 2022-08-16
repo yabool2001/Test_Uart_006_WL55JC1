@@ -48,7 +48,8 @@ DMA_HandleTypeDef hdma_usart1_rx;
 /* USER CODE BEGIN PV */
 char                hello[]         = "HELLO Test_Uart_006_WL55JC1\n" ;
 HAL_StatusTypeDef   uart_status ;
-uint8_t             rx_buff[12] ;
+uint8_t             rx_buff[15] ;
+uint8_t             tx_buff[15] ;
 
 /* USER CODE END PV */
 
@@ -298,17 +299,16 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UARTEx_RxEventCallback ( UART_HandleTypeDef *huart , uint16_t Size )
 {
-	uint16_t s1 = Size ;
-    if ( huart->Instance == USART1 ) ;
-    uint16_t l = strlen ( (const char*) rx_buff ) ;
-    uint16_t s2 = sizeof ( rx_buff ) ;
-    if ( rx_buff[0] != 0x00 )
+	//const char z[1] = { 0 } ;
+	const char* z = 0 ;
+    if ( huart->Instance == USART1 )
     {
-        //cpy_buff ( (const char*) rx_buff , tx_buff ) ;
-    	//strcpy ( (char*) tx_buff , (const char*) rx_buff ) ;
-        //rx_buff[0] = 0x00 ;
-        uart_status = HAL_UART_Transmit ( &huart2 , (const uint8_t *) rx_buff ,  strlen ( (char*) rx_buff ) , UART_TX_TIMEOUT ) ;
-        rx_buff[0] = 0x00 ;
+    	if ( rx_buff[0] != 0 )
+    	{
+    		strcat ( (char *) rx_buff , z ) ;
+    		uart_status = HAL_UART_Transmit ( &huart2 , (const uint8_t *) rx_buff ,  strlen ( (char*) rx_buff ) , UART_TX_TIMEOUT ) ;
+    		rx_buff[0] = 0 ;
+    	}
     }
     HAL_UARTEx_ReceiveToIdle_DMA ( &huart1 , rx_buff , sizeof ( rx_buff ) ) ;
 }
